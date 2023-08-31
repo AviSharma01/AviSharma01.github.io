@@ -17,7 +17,15 @@
 </head>
 
 <body>
-    <h1 style="font-size:40px;">Ultimate Tic Tac Toe</h1>
+    <!-- <h1 style="font-size:40px;">Ultimate Tic Tac Toe</h1> -->
+    <button id = "instruction-btn">Instruction</button>
+    <div id = "instruction-close">X</div>
+    <div id = "insturction"><p>Based on the general convention, this game starts with X playing wherever they want on the available (empty) spots. This move will send their opponent to the associated local board, for example if the X is played in the bottom left of their local board, then O will have to play next in any of the nine positions available for the local board at the bottom left of the global board, with each move sending X to a different board.
+
+        Based on the rules of regular tic tac toe, if a move is played to win a local board, then the whole local board is marked as a victory for that player in the global board. When a local board is won by a player or is completely filled, no more moves can be played in that board. If a move sends the player to such a board, then that player may play in any other local board. The game ends when either a player wins the global board or there are no legal moves remaining, in which case the game is a draw.</p>
+    
+    <p>Additionally, the maximum depths in the minimax function are different for mobile devices and laptops as there is generally higher processing power available on laptops, ensuring optimal performance and faster decision making in game scenarios. The maximum depth determines the number of steps the AI can think ahead. The AI on a laptop can think further ahead and computate more strategic decisions by calculating a larger number of possible outcomes. Hence, playing the game on a laptop would be greater challenge compared to playing on a mobile device.</p>
+</div>
 
 
 </body>
