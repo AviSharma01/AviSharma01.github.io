@@ -286,7 +286,7 @@ const AIplayer = function() {
                 localBoards[move.globalIndex][move.localIndex] = 'O'
                 let result;
                 if (isMobile) {
-                    result = minimax(move, localBoards, humanPlayer, 0, -Infinity, Infinity, 3)
+                    result = minimax(move, localBoards, humanPlayer, 0, -Infinity, Infinity, 4)
                 } else {
                     result = minimax(move, localBoards, humanPlayer, 0, -Infinity, Infinity, 6)
                 }
