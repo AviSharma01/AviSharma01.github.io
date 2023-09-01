@@ -49,6 +49,99 @@ const allXorO = function(board) {
   }
 
 
+const minimax = function(mo, loBoard, player, depth, alpha, beta, maxDepth) {
+    let score = evalBoard(mo.globalIndex, loBoard)
+    if (depth == maxDepth) {
+        return {score: score};
+    }
+
+    let globalBoardsMinimax = [];
+    for (let i = 0; i < 9; i++) {
+        if (winningPosition(loBoard[i], comPlayer)){
+            globalBoardsMinimax[i] = 'O'
+        }
+        else if (winningPosition(loBoard[i], humanPlayer)){
+            globalBoardsMinimax[i] = 'X'
+        }
+        else if (allXorO(loBoard[i])) {
+            globalBoardsMinimax[i] = 'Trial'
+        } else {
+            globalBoardsMinimax[i] = i
+        }
+    }
+
+    // The goal is to make the AI (comPlayer) win
+    if (winningPosition(globalBoardsMinimax, comPlayer)){
+        return {score: score + depth};
+    }
+    else if (winningPosition(globalBoardsMinimax, humanPlayer)){
+        return {score: score - depth};
+    }
+
+    if (typeof globalBoardsMinimax[mo.localIndex] === 'number' || globalBoardsMinimax[mo.localIndex] === 'NA') {
+        for (let j = 0; j < 9; j++) {
+            if (typeof globalBoardsMinimax[j] === 'number') {
+                globalBoardsMinimax[j] = 'NA'
+            }
+        }
+    }
+    
+    if (globalBoardsMinimax[mo.localIndex] === 'NA') {
+        globalBoardsMinimax[mo.localIndex] = mo.localIndex
+    }
+    let openBoardsMinimax = emptyGlobalIndices(globalBoardsMinimax)
+    if (openBoardsMinimax.length == 0) {
+        return {score: score};
+    }
+    let emptySpotsInLoBoards = emptyLocalIndices(openBoardsMinimax, loBoard);
+
+    if (player == humanPlayer) {
+        let maxVal = -Infinity;
+        let bestMove
+        for (let o = 0; o < openBoardsMinimax.length; o++) {
+            for (let i = 0; i < emptySpotsInLoBoards[o].length; i++) {
+                let move = {}
+                move.globalIndex = openBoardsMinimax[o]
+                move.localIndex = emptySpotsInLoBoards[o][i]
+                loBoard[move.globalIndex][move.localIndex] = 'X'
+                let result = minimax(move, loBoard, comPlayer, depth+1, alpha, beta, maxDepth)
+                loBoard[move.globalIndex][move.localIndex] = move.localIndex
+                if (result.score > maxVal) {
+                    maxVal = result.score
+                    bestMove = {globalIndex: move.globalIndex, localIndex: move.localIndex, score: result.score}
+                }
+                alpha = Math.max(alpha, maxVal);
+                if(beta <= alpha){
+                    break;
+                }
+            }
+        }
+        return bestMove
+    } else {
+        let minVal = Infinity;
+        let bestMove
+        for (let o = 0; o < openBoardsMinimax.length; o++) {
+            for (let i = 0; i < emptySpotsInLoBoards[o].length; i++) {
+                let move = {}
+                move.globalIndex = openBoardsMinimax[o]
+                move.localIndex = emptySpotsInLoBoards[o][i]
+                loBoard[move.globalIndex][move.localIndex] = 'O'
+                let result = minimax(move, loBoard, humanPlayer, depth+1, alpha, beta, maxDepth)
+                loBoard[move.globalIndex][move.localIndex] = move.localIndex
+                if (result.score < minVal) {
+                    minVal = result.score
+                    bestMove = {globalIndex: move.globalIndex, localIndex: move.localIndex, score: result.score}
+                }
+                beta = Math.min(beta, minVal);
+                if(beta <= alpha){
+                    break;
+                }
+            }
+        }
+        return bestMove
+    }
+}
+
 const evalBoard = function(current, loBoard) {
     const allWinningCombos = [[0,1,2],[0,4,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[3,4,5],[6,7,8]];
     const positionScores = [0.3, 0.2, 0.3, 0.2, 0.4, 0.2, 0.3, 0.2, 0.3];
@@ -176,99 +269,6 @@ const evalBoard = function(current, loBoard) {
         }
     }
     return score
-}
-
-const minimax = function(mo, loBoard, player, depth, alpha, beta, maxDepth) {
-    let score = evalBoard(mo.globalIndex, loBoard)
-    if (depth == maxDepth) {
-        return {score: score};
-    }
-
-    let globalBoardsMinimax = [];
-    for (let i = 0; i < 9; i++) {
-        if (winningPosition(loBoard[i], comPlayer)){
-            globalBoardsMinimax[i] = 'O'
-        }
-        else if (winningPosition(loBoard[i], humanPlayer)){
-            globalBoardsMinimax[i] = 'X'
-        }
-        else if (allXorO(loBoard[i])) {
-            globalBoardsMinimax[i] = 'Trial'
-        } else {
-            globalBoardsMinimax[i] = i
-        }
-    }
-
-    // The goal is to make the AI (comPlayer) win
-    if (winningPosition(globalBoardsMinimax, comPlayer)){
-        return {score: score + depth};
-    }
-    else if (winningPosition(globalBoardsMinimax, humanPlayer)){
-        return {score: score - depth};
-    }
-
-    if (typeof globalBoardsMinimax[mo.localIndex] === 'number' || globalBoardsMinimax[mo.localIndex] === 'NA') {
-        for (let j = 0; j < 9; j++) {
-            if (typeof globalBoardsMinimax[j] === 'number') {
-                globalBoardsMinimax[j] = 'NA'
-            }
-        }
-    }
-    
-    if (globalBoardsMinimax[mo.localIndex] === 'NA') {
-        globalBoardsMinimax[mo.localIndex] = mo.localIndex
-    }
-    let openBoardsMinimax = emptyGlobalIndices(globalBoardsMinimax)
-    if (openBoardsMinimax.length == 0) {
-        return {score: score};
-    }
-    let emptySpotsInLoBoards = emptyLocalIndices(openBoardsMinimax, loBoard);
-
-    if (player == humanPlayer) {
-        let maxVal = -Infinity;
-        let bestMove
-        for (let o = 0; o < openBoardsMinimax.length; o++) {
-            for (let i = 0; i < emptySpotsInLoBoards[o].length; i++) {
-                let move = {}
-                move.globalIndex = openBoardsMinimax[o]
-                move.localIndex = emptySpotsInLoBoards[o][i]
-                loBoard[move.globalIndex][move.localIndex] = 'X'
-                let result = minimax(move, loBoard, comPlayer, depth+1, alpha, beta, maxDepth)
-                loBoard[move.globalIndex][move.localIndex] = move.localIndex
-                if (result.score > maxVal) {
-                    maxVal = result.score
-                    bestMove = {globalIndex: move.globalIndex, localIndex: move.localIndex, score: result.score}
-                }
-                alpha = Math.max(alpha, maxVal);
-                if(beta <= alpha){
-                    break;
-                }
-            }
-        }
-        return bestMove
-    } else {
-        let minVal = Infinity;
-        let bestMove
-        for (let o = 0; o < openBoardsMinimax.length; o++) {
-            for (let i = 0; i < emptySpotsInLoBoards[o].length; i++) {
-                let move = {}
-                move.globalIndex = openBoardsMinimax[o]
-                move.localIndex = emptySpotsInLoBoards[o][i]
-                loBoard[move.globalIndex][move.localIndex] = 'O'
-                let result = minimax(move, loBoard, humanPlayer, depth+1, alpha, beta, maxDepth)
-                loBoard[move.globalIndex][move.localIndex] = move.localIndex
-                if (result.score < minVal) {
-                    minVal = result.score
-                    bestMove = {globalIndex: move.globalIndex, localIndex: move.localIndex, score: result.score}
-                }
-                beta = Math.min(beta, minVal);
-                if(beta <= alpha){
-                    break;
-                }
-            }
-        }
-        return bestMove
-    }
 }
 
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
