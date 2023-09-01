@@ -301,7 +301,7 @@ const AIplayer = function() {
         result.textContent = ''
         let globalIndex = bestMove.globalIndex
         let localIndex = bestMove.localIndex
-        loBoards[globalIndex][localIndex] = 'O'
+        localBoards[globalIndex][localIndex] = 'O'
         aiTTT[globalIndex].children[localIndex].textContent = 'O';
         aiTTT[globalIndex].children[localIndex].classList.add('markO')
         let lastMove = document.querySelector('#lastMove');;
