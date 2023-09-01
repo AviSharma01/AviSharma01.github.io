@@ -12,11 +12,11 @@ let comPlayer = 'O';
 const emptyGlobalIndices = function(gloBoard) {
     return gloBoard.filter (s => s != 'X' && s != 'O' && s != 'Trial' && s != 'NA');
 }
-const emptyLocalIndices = function(openBoards, loBoards) {
+const emptyLocalIndices = function(openBoards, localBoards) {
     const emptySpots = [];
     for (let i = 0; i < openBoards.length; i++) {
-        if (Array.isArray(loBoards[openBoards[i]])) {
-            emptySpots.push(loBoards[openBoards[i]].map((sq, index) => (sq !== 'X' && sq != 'O' ? index : null)).filter(index => index !== null));
+        if (Array.isArray(localBoards[openBoards[i]])) {
+            emptySpots.push(localBoards[openBoards[i]].map((sq, index) => (sq !== 'X' && sq != 'O' ? index : null)).filter(index => index !== null));
         } else {
             emptySpots.push([]);
         }
@@ -274,7 +274,7 @@ const minimax = function(mo, loBoard, player, depth, alpha, beta, maxDepth) {
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 const AIplayer = function() {
     if (turn % 2 != 0) {
-        let emptySpotsInLoBoards = emptyLoIndices(openBoards, loBoards);
+        let emptySpotsInLoBoards = emptyLocalIndices(openBoards, loBoards);
         // let moves = []
         let minimumScore = Infinity;
         let bestMove
@@ -283,15 +283,15 @@ const AIplayer = function() {
                 let move = {}
                 move.globalIndex = openBoards[o]
                 move.localIndex = emptySpotsInLoBoards[o][i]
-                loBoards[move.globalIndex][move.localIndex] = 'O'
+                localBoards[move.globalIndex][move.localIndex] = 'O'
                 let result;
                 if (isMobile) {
                     result = minimax(move, loBoards, humanPlayer, 0, -Infinity, Infinity, 3)
                 } else {
                     result = minimax(move, loBoards, humanPlayer, 0, -Infinity, Infinity, 6)
                 }
-                loBoards[move.globalIndex][move.localIndex] = move.localIndex
-                // moves.push(move)
+                localBoards[move.globalIndex][move.localIndex] = move.localIndex
+                
                 if (result.score < minimumScore) {
                     minimumScore = result.score;
                     bestMove = {globalIndex: move.globalIndex, localIndex: move.localIndex, score: result.score};
@@ -319,7 +319,7 @@ const AIplayer = function() {
         
         turn++
 
-        if (winningPosition(globalBoards, comPlayer) || winning(globalBoards, humanPlayer)){
+        if (winningPosition(globalBoards, comPlayer) || winningPosition(globalBoards, humanPlayer)){
             for (let i = 0; i < main.children.length; i++) {
                 if (typeof globalBoards[i] == 'number') {
                     for (let j = 0; j < 9; j++) {
@@ -334,7 +334,7 @@ const AIplayer = function() {
             } else if (winningPosition(globalBoards, humanPlayer)){
                 result.textContent = "Player X wins!"
             } 
-        } else if (!gloBoard.some(item => typeof item === 'number')) {
+        } else if (!globalBoards.some(item => typeof item === 'number')) {
             result.textContent = "Draw game!"
         }
     }
