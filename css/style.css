@@ -125,7 +125,7 @@ a {
 
 
 #lastMove {
-    background-color: #ffd900;
+    background-color: #FFFF9F;
 }
 
 
@@ -154,7 +154,7 @@ span {
 
 span:hover {
     cursor: pointer;
-    color: #ffd900;
+    color: #FFFF9F;
 }
 
 span:active {
