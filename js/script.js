@@ -6,8 +6,8 @@ let localBoards = [
     [0, 1, 2, 3, 4, 5, 6, 7, 8], [0, 1, 2, 3, 4, 5, 6, 7, 8], [0, 1, 2, 3, 4, 5, 6, 7, 8]
 ];
 
-let humanPlayer = 'X';
 let comPlayer = 'O';
+let humanPlayer = 'X';
 
 const emptyGlobalIndices = function(globalBoards) {
     return globalBoards.filter (s => s != 'X' && s != 'O' && s != 'Trial' && s != 'NA');
@@ -357,10 +357,10 @@ const result = document.querySelector('#result');
 
 const globalBoardIndex = function(nextBoardIndex) {
     for (let i = 0; i < 9; i++) {
-        if (winning(localBoards[i], comPlayer)){
+        if (winningPosition(localBoards[i], comPlayer)){
             globalBoards[i] = 'O'
         }
-        else if (winning(localBoards[i], humanPlayer)){
+        else if (winningPosition(localBoards[i], humanPlayer)){
             globalBoards[i] = 'X'
         }
         else if (allXorO(localBoards[i])) {
@@ -465,9 +465,9 @@ for (let cell of cells) {
 
         lastBoards = [...openBoards]
         if (turn % 2 != 0) {
-            console.log(humanPlayer, evalBoard(lastBoards, loBoards))
+            console.log(humanPlayer, evalBoard(lastBoards, localBoards))
         } else {
-            console.log(comPlayer, evalBoard(lastBoards, loBoards))
+            console.log(comPlayer, evalBoard(lastBoards, localBoards))
         }
         openBoards = emptyGlobalIndices(gloBoard)
 
