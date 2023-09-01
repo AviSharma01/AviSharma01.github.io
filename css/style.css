@@ -1,7 +1,6 @@
-*{
+* {
     user-select: none;
     font-family: fantasy;
-
 }
 
 body {
@@ -13,13 +12,11 @@ body {
     text-align: -webkit-center;
     position: relative;
 }
-
 #result {
     margin-top: 2%;
     font-size: x-large;
 }
-
-#instruction-btn{
+#instruction-btn {
     margin-top: 5%;
     font-size: large;
     background: transparent;
@@ -27,7 +24,6 @@ body {
     text-decoration: underline;
     cursor: pointer;
 }
-
 #instruction-close {
     position: absolute;
     right: 5%;
@@ -73,6 +69,7 @@ body {
     grid-gap: 0px; 
     height: 100vh;
 }
+
 
 a {
     color: inherit; 
@@ -125,9 +122,13 @@ a {
 }
 
 
+
+
 #lastMove {
     background-color: yellow;
 }
+
+
 
 .congratsBG {
     visibility: hidden;
@@ -268,6 +269,8 @@ span:active {
 .character.selected {
     pointer-events: none;
 }
+
+
 
 header {
     grid-column: 1/4;
@@ -423,6 +426,8 @@ ul{
     grid-gap: 5px;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
+    /* grid-column: 1/4;
+    grid-row: 1/4; */
 }
 
 
@@ -431,7 +436,7 @@ ul{
     color: white;
     display: flex;
     justify-content: center;
-    font-family: 'Roboto', sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 3vh;
     height: 5.2vh;
     width: 5vh;
@@ -455,7 +460,7 @@ ul{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Raleway', Arial, Helvetica, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     line-height: 3vh;
     font-size: 3vh;
 }
@@ -467,7 +472,7 @@ ul{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Raleway', Arial, Helvetica, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     line-height: 3vh;
     font-size: 3vh;
 
@@ -480,7 +485,7 @@ ul{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Raleway', Arial, Helvetica, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     line-height: 3vh;
     font-size: 3vh;
 }
@@ -492,7 +497,7 @@ ul{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Raleway', Arial, Helvetica, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 3vh;
     line-height: 3vh;
 }
@@ -517,7 +522,7 @@ ul{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Raleway', Arial, Helvetica, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 3vh;
     pointer-events: none;
 }
@@ -528,7 +533,7 @@ ul{
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Raleway', Arial, Helvetica, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     line-height: 3vh;
     pointer-events: none;
 }
@@ -538,7 +543,7 @@ ul{
     color: white;
     display: flex;
     justify-content: center;
-    font-family: 'Raleway', Arial, Helvetica, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 0;
     pointer-events: none;
 }
