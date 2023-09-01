@@ -57,7 +57,7 @@ body{
     display: none;
 }
 
-#rules p {
+#instruction p {
     font-weight: bold;
     font-size: medium;
     width: 80%;
