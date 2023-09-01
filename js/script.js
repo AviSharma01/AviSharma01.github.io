@@ -9,8 +9,8 @@ let localBoards = [
 let humanPlayer = 'X';
 let comPlayer = 'O';
 
-const emptyGlobalIndices = function(gloBoard) {
-    return gloBoard.filter (s => s != 'X' && s != 'O' && s != 'Trial' && s != 'NA');
+const emptyGlobalIndices = function(globalBoards) {
+    return globalBoards.filter (s => s != 'X' && s != 'O' && s != 'Trial' && s != 'NA');
 }
 const emptyLocalIndices = function(openBoards, localBoards) {
     const emptySpots = [];
