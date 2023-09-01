@@ -14,3 +14,4 @@ Following the customary rules, the game commences with player X making a move in
 
 ### Further Resources
 
+The Alpha Zero Algorithm can be used to create the Ultimate Tic Tac Toe AI <https://web.stanford.edu/~surag/posts/alphazero.html>
