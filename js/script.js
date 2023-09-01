@@ -405,7 +405,7 @@ const cellChanges = function (nextBoard, index) {
         }
     }
     if (winningPosition(localBoards[index], comPlayer)){
-        gloBoard[index] = 'O';
+        globalBoards[index] = 'O';
         for (let i = 0; i < 9; i++) {
             aiTTT[index].children[i].classList.add('cell2W')
             aiTTT[index].children[i].classList.remove('cellNA')
