@@ -416,7 +416,7 @@ ul{
 
 
 
-.aiTTT {
+.TTT {
     display: grid;
     background-color: lightgray;
     grid-gap: 5px;
@@ -596,7 +596,7 @@ ul{
         margin: auto;
         grid-gap: 7.5px;
     }
-    .aiTTT {
+    .TTT {
         grid-gap: 0.3vw;
     }
     .cell {
