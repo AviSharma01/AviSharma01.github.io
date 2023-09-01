@@ -1,12 +1,12 @@
 * {
     user-select: none;
-    font-family: fantasy;
+    /* font-family: fantasy; */
 }
 
 body {
     margin: 0px;
     height: 100vh;
-    font-family: 'Raleway', Arial, Helvetica, sans-serif;
+    font-family: 'Quicksand';
     font-weight: bold;
     background-color: #f1f0ee;
     text-align: -webkit-center;
