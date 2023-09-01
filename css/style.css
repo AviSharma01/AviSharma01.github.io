@@ -1,25 +1,25 @@
 *{
-    margin: 0;
     user-select: none;
 
 }
 
 body{
+    margin: 0px;
     height: 100vh;
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
-    background-color: #78a3c5;
+    background-color: #eed9c4;
     text-align: -webkit-center;
     position: relative;
 }
 
 #result{
-    margin-top: 4%;
-    font-size: large;
+    margin-top: 2%;
+    font-size: x-large;
 }
 
 #instruction-btn{
-    margin-top: 6%;
+    margin-top: 5%;
     font-size: large;
     background: transparent;
     border: none;
@@ -35,7 +35,7 @@ body{
     line-height: 150%;
     margin: auto;
     z-index: 3;
-    font-size:x-large;
+    font-size:xx-large;
     cursor: pointer;
     display: none;
 }
@@ -49,7 +49,7 @@ body{
     line-height: 150%;
     margin: auto;
     z-index: 2;
-    background-color: rgba(211, 211, 211, 0.61);
+    background-color: rgba(211, 211, 211, 0.95);
     display: flex;
     flex-direction: column;
     align-items: center;
