@@ -343,7 +343,7 @@ const AIplayer = function() {
 // -------------------------------------- All main functions are above ---------------------------------------------//
 
 const main = document.querySelector('.main-content');
-const aiTTT = document.querySelectorAll('.aiTTT');
+const aiTTT = document.querySelectorAll('.TTT');
 const cells = document.querySelectorAll('.cell');
 let cell2s = document.querySelectorAll('.cell2');
 let cellNAs = document.querySelectorAll('cellNA');
