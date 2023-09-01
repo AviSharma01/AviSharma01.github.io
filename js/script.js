@@ -274,7 +274,7 @@ const evalBoard = function(current, loBoard) {
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 const AIplayer = function() {
     if (turn % 2 != 0) {
-        let emptySpotsInLoBoards = emptyLocalIndices(openBoards, loBoards);
+        let emptySpotsInLoBoards = emptyLocalIndices(openBoards, localBoards);
         // let moves = []
         let minimumScore = Infinity;
         let bestMove
@@ -286,9 +286,9 @@ const AIplayer = function() {
                 localBoards[move.globalIndex][move.localIndex] = 'O'
                 let result;
                 if (isMobile) {
-                    result = minimax(move, loBoards, humanPlayer, 0, -Infinity, Infinity, 3)
+                    result = minimax(move, localBoards, humanPlayer, 0, -Infinity, Infinity, 3)
                 } else {
-                    result = minimax(move, loBoards, humanPlayer, 0, -Infinity, Infinity, 6)
+                    result = minimax(move, localBoards, humanPlayer, 0, -Infinity, Infinity, 6)
                 }
                 localBoards[move.globalIndex][move.localIndex] = move.localIndex
                 
