@@ -179,7 +179,7 @@ const evalBoard = function(current, loBoard) {
 }
 
 const minimax = function(mo, loBoard, player, depth, alpha, beta, maxDepth) {
-    let score = evalBoard(mo.gloIndex, loBoard)
+    let score = evalBoard(mo.globalIndex, loBoard)
     if (depth == maxDepth) {
         return {score: score};
     }
@@ -207,7 +207,7 @@ const minimax = function(mo, loBoard, player, depth, alpha, beta, maxDepth) {
         return {score: score - depth};
     }
 
-    if (typeof globalBoardsMinimax[mo.loIndex] === 'number' || globalBoardsMinimax[mo.loIndex] === 'NA') {
+    if (typeof globalBoardsMinimax[mo.localIndex] === 'number' || globalBoardsMinimax[mo.localIndex] === 'NA') {
         for (let j = 0; j < 9; j++) {
             if (typeof globalBoardsMinimax[j] === 'number') {
                 globalBoardsMinimax[j] = 'NA'
@@ -215,8 +215,8 @@ const minimax = function(mo, loBoard, player, depth, alpha, beta, maxDepth) {
         }
     }
     
-    if (globalBoardsMinimax[mo.loIndex] === 'NA') {
-        globalBoardsMinimax[mo.loIndex] = mo.loIndex
+    if (globalBoardsMinimax[mo.localIndex] === 'NA') {
+        globalBoardsMinimax[mo.localIndex] = mo.localIndex
     }
     let openBoardsMinimax = emptyGlobalIndices(globalBoardsMinimax)
     if (openBoardsMinimax.length == 0) {
@@ -230,14 +230,14 @@ const minimax = function(mo, loBoard, player, depth, alpha, beta, maxDepth) {
         for (let o = 0; o < openBoardsMinimax.length; o++) {
             for (let i = 0; i < emptySpotsInLoBoards[o].length; i++) {
                 let move = {}
-                move.gloIndex = openBoardsMinimax[o]
-                move.loIndex = emptySpotsInLoBoards[o][i]
-                loBoard[move.gloIndex][move.loIndex] = 'X'
+                move.globalIndex = openBoardsMinimax[o]
+                move.localIndex = emptySpotsInLoBoards[o][i]
+                loBoard[move.globalIndex][move.localIndex] = 'X'
                 let result = minimax(move, loBoard, comPlayer, depth+1, alpha, beta, maxDepth)
-                loBoard[move.gloIndex][move.loIndex] = move.loIndex
+                loBoard[move.globalIndex][move.localIndex] = move.localIndex
                 if (result.score > maxVal) {
                     maxVal = result.score
-                    bestMove = {gloIndex: move.gloIndex, loIndex: move.loIndex, score: result.score}
+                    bestMove = {globalIndex: move.globalIndex, localIndex: move.localIndex, score: result.score}
                 }
                 alpha = Math.max(alpha, maxVal);
                 if(beta <= alpha){
@@ -252,14 +252,14 @@ const minimax = function(mo, loBoard, player, depth, alpha, beta, maxDepth) {
         for (let o = 0; o < openBoardsMinimax.length; o++) {
             for (let i = 0; i < emptySpotsInLoBoards[o].length; i++) {
                 let move = {}
-                move.gloIndex = openBoardsMinimax[o]
-                move.loIndex = emptySpotsInLoBoards[o][i]
-                loBoard[move.gloIndex][move.loIndex] = 'O'
+                move.globalIndex = openBoardsMinimax[o]
+                move.localIndex = emptySpotsInLoBoards[o][i]
+                loBoard[move.globalIndex][move.localIndex] = 'O'
                 let result = minimax(move, loBoard, humanPlayer, depth+1, alpha, beta, maxDepth)
-                loBoard[move.gloIndex][move.loIndex] = move.loIndex
+                loBoard[move.globalIndex][move.localIndex] = move.localIndex
                 if (result.score < minVal) {
                     minVal = result.score
-                    bestMove = {gloIndex: move.gloIndex, loIndex: move.loIndex, score: result.score}
+                    bestMove = {globalIndex: move.globalIndex, localIndex: move.localIndex, score: result.score}
                 }
                 beta = Math.min(beta, minVal);
                 if(beta <= alpha){
@@ -281,41 +281,41 @@ const AIplayer = function() {
         for (let o = 0; o < openBoards.length; o++) {
             for (let i = 0; i < emptySpotsInLoBoards[o].length; i++) {
                 let move = {}
-                move.gloIndex = openBoards[o]
-                move.loIndex = emptySpotsInLoBoards[o][i]
-                loBoards[move.gloIndex][move.loIndex] = 'O'
+                move.globalIndex = openBoards[o]
+                move.localIndex = emptySpotsInLoBoards[o][i]
+                loBoards[move.globalIndex][move.localIndex] = 'O'
                 let result;
                 if (isMobile) {
                     result = minimax(move, loBoards, humanPlayer, 0, -Infinity, Infinity, 3)
                 } else {
                     result = minimax(move, loBoards, humanPlayer, 0, -Infinity, Infinity, 6)
                 }
-                loBoards[move.gloIndex][move.loIndex] = move.loIndex
+                loBoards[move.globalIndex][move.localIndex] = move.localIndex
                 // moves.push(move)
                 if (result.score < minimumScore) {
                     minimumScore = result.score;
-                    bestMove = {gloIndex: move.gloIndex, loIndex: move.loIndex, score: result.score};
+                    bestMove = {globalIndex: move.globalIndex, localIndex: move.localIndex, score: result.score};
                 }
             }
         }
         result.textContent = ''
-        let gloIndex = bestMove.gloIndex
-        let loIndex = bestMove.loIndex
-        loBoards[gloIndex][loIndex] = 'O'
-        ttts[gloIndex].children[loIndex].textContent = 'O';
-        ttts[gloIndex].children[loIndex].classList.add('markO')
+        let globalIndex = bestMove.globalIndex
+        let localIndex = bestMove.localIndex
+        loBoards[globalIndex][localIndex] = 'O'
+        aiTTT[globalIndex].children[localIndex].textContent = 'O';
+        aiTTT[globalIndex].children[localIndex].classList.add('markO')
         let lastMove = document.querySelector('#lastMove');;
         try {if (lastMove.id != null) {
             lastMove.id = '';
         }}catch{};
-        ttts[gloIndex].children[loIndex].id = 'lastMove';
+        aiTTT[globalIndex].children[localIndex].id = 'lastMove';
     
         cells.forEach(target =>
             target.classList.toggle('cell2'))
 
-        let nextBoard = main.children[loIndex];
-        cellChanges(nextBoard, gloIndex)
-        gloBoardIndex(loIndex)
+        let nextBoard = main.children[localIndex];
+        cellChanges(nextBoard, globalIndex)
+        globalBoardIndex(localIndex)
         
         turn++
 
@@ -339,3 +339,173 @@ const AIplayer = function() {
         }
     }
 }
+
+// -------------------------------------- All main functions are above ---------------------------------------------//
+
+const main = document.querySelector('.main-content');
+const aiTTT = document.querySelectorAll('.aiTTT');
+const cells = document.querySelectorAll('.cell');
+let cell2s = document.querySelectorAll('.cell2');
+let cellNAs = document.querySelectorAll('cellNA');
+let markXs = document.querySelectorAll('.markX');
+let markOs = document.querySelectorAll('.markO');
+let turn = 0;
+let globalIndex;
+let localIndex;
+const result = document.querySelector('#result');
+
+
+const globalBoardIndex = function(nextBoardIndex) {
+    for (let i = 0; i < 9; i++) {
+        if (winning(localBoards[i], comPlayer)){
+            globalBoards[i] = 'O'
+        }
+        else if (winning(localBoards[i], humanPlayer)){
+            globalBoards[i] = 'X'
+        }
+        else if (allXorO(localBoards[i])) {
+            globalBoards[i] = 'Trial'
+        } else if (typeof globalBoards[i] == 'number') {
+            globalBoards[i] = 'NA'
+        }
+    }
+    if (globalBoards[nextBoardIndex] !== 'NA') {
+        for (let i = 0; i < 9; i++) {
+            if (globalBoards[i] == 'NA') {
+                globalBoards[i] = i
+            }
+        }
+    } else {
+        globalBoards[nextBoardIndex] = nextBoardIndex
+    }
+}
+let openBoards = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+let lastBoards = [...openBoards]
+const cellChanges = function (nextBoard, index) {
+    for (let i = 0; i < main.children.length; i++) {
+        markXs = document.querySelectorAll('markX');
+        markOs = document.querySelectorAll('markO');
+        if (main.children[i] != nextBoard && (!main.children[i].firstElementChild.classList.contains('cellW') && !main.children[i].firstElementChild.classList.contains('cell2W'))) {
+            for (let j = 0; j < 9; j++) {
+                if (!main.children[i].children[j].classList.contains('markX') && !main.children[i].children[j].classList.contains('markO')) {
+                    main.children[i].children[j].classList.add('cellNA');  
+                }
+            }   
+        } else {
+            for (let j = 0; j < 9; j++) {
+                main.children[i].children[j].classList.remove('cellNA');
+            }  
+        }
+    }
+    if (winningPosition(localBoards[index], humanPlayer)){
+        globalBoards[index] = 'X';
+        for (let i = 0; i < 9; i++) {
+            aiTTT[index].children[i].classList.add('cellW')
+            aiTTT[index].children[i].classList.remove('cellNA')
+        }
+    }
+    if (winningPosition(localBoards[index], comPlayer)){
+        gloBoard[index] = 'O';
+        for (let i = 0; i < 9; i++) {
+            aiTTT[index].children[i].classList.add('cell2W')
+            aiTTT[index].children[i].classList.remove('cellNA')
+        }
+    }
+    if (nextBoard.firstElementChild.classList.contains('cellW') || nextBoard.firstElementChild.classList.contains('cell2W') || allXorO(nextBoard)) {
+        cellNAs = document.querySelectorAll('.cellNA');
+        for (let cellNA of cellNAs) {
+            cellNA.classList.remove('cellNA')
+        }
+    }
+}
+
+for (let cell of cells) {
+    cell.addEventListener('click', function() {
+        if (cell.className === 'markX' || cell.className === 'markO') {
+            return;
+        }
+        lastMove = document.querySelector('#lastMove');;
+            try {if (lastMove.id != null) {
+                lastMove.id = '';
+            }}catch{};
+            cell.id = 'lastMove';
+
+        let targetBoard = cell.parentElement;
+        for (let i = 0; i < main.children.length; i++) {
+            if (main.children[i] === targetBoard) {
+                globalIndex = i;
+            } 
+        }
+        for (let i = 0; i < targetBoard.children.length; i++) {
+            if (targetBoard.children[i] === cell) {
+                localIndex = i;
+            }
+        }
+
+        turn++
+
+        if (turn % 2 != 0) {
+            localBoards[globalIndex][localIndex] = 'X';
+            cell.textContent = 'X';
+            cell.classList.add('markX')
+            cells.forEach(target =>
+                target.classList.toggle('cell2'))
+        }
+        else {
+            localBoards[globalIndex][localIndex] = 'O'
+            cell.textContent = 'O';
+            cell.classList.add('markO')
+            cells.forEach(target =>
+                target.classList.toggle('cell2'))
+        }
+        let nextBoard = main.children[localIndex];
+        
+        cellChanges(nextBoard, globalIndex)
+        globalBoardIndex(localIndex)
+
+        lastBoards = [...openBoards]
+        if (turn % 2 != 0) {
+            console.log(humanPlayer, evalBoard(lastBoards, loBoards))
+        } else {
+            console.log(comPlayer, evalBoard(lastBoards, loBoards))
+        }
+        openBoards = emptyGlobalIndices(gloBoard)
+
+        if (winningPosition(globalBoards, comPlayer) || winningPosition(globalBoards, humanPlayer)){
+            for (let i = 0; i < main.children.length; i++) {
+                if (typeof globalBoards[i] == 'number') {
+                    for (let j = 0; j < 9; j++) {
+                        if (!main.children[i].children[j].classList.contains('markX') && !main.children[i].children[j].classList.contains('markO')) {
+                            main.children[i].children[j].classList.add('cellNA');  
+                        }
+                    }
+                }
+            }
+            if (winningPosition(globalBoards, comPlayer)) {
+                result.textContent = "Player O wins!"
+            } else if (winningPosition(globalBoards, humanPlayer)){
+                result.textContent = "Player X wins!"
+            }
+        } else if (!globalBoards.some(item => typeof item === 'number')) {
+            result.textContent = "Draw game!"
+        } else {
+            result.textContent = 'Minimax analyzing moves..'
+            setTimeout(() => {
+                AIplayer() 
+            }, 0);
+        }
+    })
+    
+};
+
+const instructionBtn = document.querySelector('#instruction-btn')
+const instruction = document.querySelector('#instruction')
+const instructionClose = document.querySelector('#instruction-close')
+instructionBtn.addEventListener('click', function() {
+    instruction.style.display = "flex"
+    instructionClose.style.display = "flex"
+})
+instructionClose.addEventListener('click', function() {
+    instruction.style.display = "none"
+    instructionClose.style.display = "none"
+})
