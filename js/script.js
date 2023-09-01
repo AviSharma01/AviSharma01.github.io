@@ -469,7 +469,7 @@ for (let cell of cells) {
         } else {
             console.log(comPlayer, evalBoard(lastBoards, localBoards))
         }
-        openBoards = emptyGlobalIndices(gloBoard)
+        openBoards = emptyGlobalIndices(globalBoards)
 
         if (winningPosition(globalBoards, comPlayer) || winningPosition(globalBoards, humanPlayer)){
             for (let i = 0; i < main.children.length; i++) {
