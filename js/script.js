@@ -1,4 +1,4 @@
-let globalBoards = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+let globalBoards = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 let localBoards = [
     [0, 1, 2, 3, 4, 5, 6, 7, 8], [0, 1, 2, 3, 4, 5, 6, 7, 8], [0, 1, 2, 3, 4, 5, 6, 7, 8], 
@@ -10,7 +10,7 @@ let comPlayer = 'O';
 let humanPlayer = 'X';
 
 const emptyGlobalIndices = function(globalBoards) {
-    return globalBoards.filter (s => s != 'X' && s != 'O' && s != 'Trial' && s != 'NA');
+    return globalBoards.filter (s => s != 'X' && s != 'O' && s != 'T' && s != 'NA');
 }
 const emptyLocalIndices = function(openBoards, localBoards) {
     const emptySpots = [];
@@ -64,7 +64,7 @@ const minimax = function(mo, loBoard, player, depth, alpha, beta, maxDepth) {
             globalBoardsMinimax[i] = 'X'
         }
         else if (allXorO(loBoard[i])) {
-            globalBoardsMinimax[i] = 'Trial'
+            globalBoardsMinimax[i] = 'T'
         } else {
             globalBoardsMinimax[i] = i
         }
@@ -193,12 +193,12 @@ const evalBoard = function(current, loBoard) {
             gloBoard[i] = 'O'
             score = score - positionScores[i] * 150
         }
-        else if (winning(loBoard[i], humanPlayer)){
+        else if (winningPosition(loBoard[i], humanPlayer)){
             gloBoard[i] = 'X'
             score = score + positionScores[i] * 150
         }
         else if (allXorO(loBoard[i])) {
-            gloBoard[i] = 'Trial'
+            gloBoard[i] = 'T'
         } else {
             gloBoard[i] = i
         }
@@ -364,7 +364,7 @@ const globalBoardIndex = function(nextBoardIndex) {
             globalBoards[i] = 'X'
         }
         else if (allXorO(localBoards[i])) {
-            globalBoards[i] = 'Trial'
+            globalBoards[i] = 'T'
         } else if (typeof globalBoards[i] == 'number') {
             globalBoards[i] = 'NA'
         }
