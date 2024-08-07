@@ -1,3 +1,5 @@
+import { logGameState, saveGameHistoryToLocalStorage, exportGameHistory, getNeuralNetworkMove } from './ai-player.js';
+
 let globalBoards = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 let localBoards = [
@@ -272,12 +274,15 @@ const evalBoard = function(current, loBoard) {
 }
 
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-const AIplayer = function() {
+const AIplayer = async function() {
     if (turn % 2 != 0) {
         let emptySpotsInLoBoards = emptyLocalIndices(openBoards, localBoards);
-        // let moves = []
         let minimumScore = Infinity;
-        let bestMove
+        let bestMove;
+
+        // New: Get neural network probabilities
+        let nnProbabilities = await getNeuralNetworkMove(localBoards);
+
         for (let o = 0; o < openBoards.length; o++) {
             for (let i = 0; i < emptySpotsInLoBoards[o].length; i++) {
                 let move = {}
@@ -292,9 +297,13 @@ const AIplayer = function() {
                 }
                 localBoards[move.globalIndex][move.localIndex] = move.localIndex
                 
-                if (result.score < minimumScore) {
-                    minimumScore = result.score;
-                    bestMove = {globalIndex: move.globalIndex, localIndex: move.localIndex, score: result.score};
+                // New: Combine minimax score with neural network probability
+                let nnProbability = nnProbabilities ? nnProbabilities[move.globalIndex * 9 + move.localIndex] : 0;
+                let combinedScore = result.score * (1 + nnProbability);
+
+                if (combinedScore < minimumScore) {
+                    minimumScore = combinedScore;
+                    bestMove = {globalIndex: move.globalIndex, localIndex: move.localIndex, score: combinedScore};
                 }
             }
         }
@@ -336,6 +345,12 @@ const AIplayer = function() {
             } 
         } else if (!globalBoards.some(item => typeof item === 'number')) {
             result.textContent = "Draw game!"
+        }
+
+        logGameState(globalBoards, localBoards, {globalIndex: bestMove.globalIndex, localIndex: bestMove.localIndex});
+
+        if (winningPosition(globalBoards, comPlayer) || winningPosition(globalBoards, humanPlayer) || !globalBoards.some(item => typeof item === 'number')) {
+            saveGameHistoryToLocalStorage();
         }
     }
 }
@@ -424,11 +439,13 @@ for (let cell of cells) {
         if (cell.className === 'markX' || cell.className === 'markO') {
             return;
         }
-        lastMove = document.querySelector('#lastMove');;
-            try {if (lastMove.id != null) {
+        lastMove = document.querySelector('#lastMove');
+        try {
+            if (lastMove.id != null) {
                 lastMove.id = '';
-            }}catch{};
-            cell.id = 'lastMove';
+            }
+        } catch {};
+        cell.id = 'lastMove';
 
         let targetBoard = cell.parentElement;
         for (let i = 0; i < main.children.length; i++) {
@@ -471,6 +488,9 @@ for (let cell of cells) {
         }
         openBoards = emptyGlobalIndices(globalBoards)
 
+        // Log the player's move
+        logGameState(globalBoards, localBoards, {globalIndex, localIndex});
+
         if (winningPosition(globalBoards, comPlayer) || winningPosition(globalBoards, humanPlayer)){
             for (let i = 0; i < main.children.length; i++) {
                 if (typeof globalBoards[i] == 'number') {
@@ -486,16 +506,17 @@ for (let cell of cells) {
             } else if (winningPosition(globalBoards, humanPlayer)){
                 result.textContent = "Player X wins!"
             }
+            saveGameHistoryToLocalStorage(); // Save game history when game ends
         } else if (!globalBoards.some(item => typeof item === 'number')) {
             result.textContent = "Draw game!"
+            saveGameHistoryToLocalStorage(); // Save game history when game ends in a draw
         } else {
-            result.textContent = 'Minimax analyzing moves..'
-            setTimeout(() => {
-                AIplayer() 
+            result.textContent = 'AI analyzing moves...'
+            setTimeout(async () => {
+                await AIplayer() 
             }, 0);
         }
     })
-    
 };
 
 const instructionBtn = document.querySelector('#instruction-btn')
@@ -509,3 +530,9 @@ instructionClose.addEventListener('click', function() {
     instruction.style.display = "none"
     instructionClose.style.display = "none"
 })
+
+// Add export button
+const exportButton = document.createElement('button');
+exportButton.textContent = 'Export Game History';
+exportButton.onclick = exportGameHistory;
+document.body.appendChild(exportButton);
