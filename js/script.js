@@ -1,3 +1,4 @@
+import { getNeuralNetworkMove, logGameState, saveGameHistoryToLocalStorage, exportGameHistory } from './ai-player.js'
 let globalBoards = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 let localBoards = [
@@ -272,12 +273,16 @@ const evalBoard = function(current, loBoard) {
 }
 
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-const AIplayer = function() {
+const AIplayer = async function() {
     if (turn % 2 != 0) {
         let emptySpotsInLoBoards = emptyLocalIndices(openBoards, localBoards);
         // let moves = []
         let minimumScore = Infinity;
-        let bestMove
+        let bestMove;
+
+        let nnProbabilities = await getNeuralNetworkMove(localBoards);
+        console.log("Neural network probabilities:", nnProbabilities);
+
         for (let o = 0; o < openBoards.length; o++) {
             for (let i = 0; i < emptySpotsInLoBoards[o].length; i++) {
                 let move = {}
@@ -318,6 +323,8 @@ const AIplayer = function() {
         globalBoardIndex(localIndex)
         
         turn++
+
+        logGameState(globalBoards, localBoards, {globalIndex: bestMove.globalIndex, localIndex: bestMove.localIndex});
 
         if (winningPosition(globalBoards, comPlayer) || winningPosition(globalBoards, humanPlayer)){
             for (let i = 0; i < main.children.length; i++) {
@@ -458,6 +465,8 @@ for (let cell of cells) {
             cells.forEach(target =>
                 target.classList.toggle('cell2'))
         }
+
+        logGameState(globalBoards, localBoards, {globalIndex, localIndex});
         let nextBoard = main.children[localIndex];
         
         cellChanges(nextBoard, globalIndex)
@@ -486,12 +495,14 @@ for (let cell of cells) {
             } else if (winningPosition(globalBoards, humanPlayer)){
                 result.textContent = "Player X wins!"
             }
+            saveGameHistoryToLocalStorage();
         } else if (!globalBoards.some(item => typeof item === 'number')) {
             result.textContent = "Draw game!"
+            saveGameHistoryToLocalStorage();
         } else {
             result.textContent = 'Minimax analyzing moves..'
-            setTimeout(() => {
-                AIplayer() 
+            setTimeout(async () => {
+                await AIplayer() 
             }, 0);
         }
     })
@@ -509,3 +520,8 @@ instructionClose.addEventListener('click', function() {
     instruction.style.display = "none"
     instructionClose.style.display = "none"
 })
+
+const exportButton = document.createElement('button');
+exportButton.textContent = 'Export Game History';
+exportButton.onclick = exportGameHistory;
+document.body.appendChild(exportButton);
