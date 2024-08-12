@@ -8,12 +8,10 @@ async function loadModel() {
         console.error('Failed to load the model:', error);
     }
 }
-loadModel();
-
 
 let gameHistory = [];
 
-export function logGameState(globalBoards, localBoards, move) {
+function logGameState(globalBoards, localBoards, move) {
     let gameState = {
         globalBoards: JSON.parse(JSON.stringify(globalBoards)),
         localBoards: JSON.parse(JSON.stringify(localBoards)),
@@ -24,7 +22,7 @@ export function logGameState(globalBoards, localBoards, move) {
     console.log('Game state logged:', gameState);
 }
 
-export function saveGameHistoryToLocalStorage() {
+function saveGameHistoryToLocalStorage() {
     let existingData = JSON.parse(localStorage.getItem('utttGameHistory')) || [];
     existingData.push(gameHistory);
     localStorage.setItem('utttGameHistory', JSON.stringify(existingData));
@@ -32,7 +30,7 @@ export function saveGameHistoryToLocalStorage() {
     gameHistory = []; 
 }
 
-export function exportGameHistory() {
+function exportGameHistory() {
     let data = localStorage.getItem('utttGameHistory');
     if (!data) {
         console.log('No game history to export');
@@ -47,7 +45,7 @@ export function exportGameHistory() {
     console.log('Game history exported');
 }
 
-export async function getNeuralNetworkMove(localBoards) {
+async function getNeuralNetworkMove(localBoards) {
     if (!model) {
         console.warn('Neural network model not loaded. Skipping NN prediction.');
         return null;
@@ -65,7 +63,6 @@ export async function getNeuralNetworkMove(localBoards) {
 }
 
 function convertBoardToModelInput(localBoards) {
-   
     let input = new Array(9).fill(0).map(() => new Array(9).fill(0).map(() => new Array(3).fill(0)));
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
@@ -81,5 +78,8 @@ function convertBoardToModelInput(localBoards) {
     return input;
 }
 
+loadModel();
 
 console.log('AI player module loaded');
+
+export { logGameState, saveGameHistoryToLocalStorage, exportGameHistory, getNeuralNetworkMove };
