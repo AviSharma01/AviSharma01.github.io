@@ -2,10 +2,16 @@ let model;
 
 async function loadModel() {
     try {
+        const response = await fetch('https://avisharma01.github.io/models/uttt_model/model.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         model = await tf.loadLayersModel('https://avisharma01.github.io/models/uttt_model/model.json');
         console.log('Neural network model loaded successfully');
     } catch (error) {
         console.error('Failed to load the model:', error);
+        
+        model = null;
     }
 }
 
